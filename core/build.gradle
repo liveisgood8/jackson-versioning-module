@@ -1,0 +1,22 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.7.2'
+    jacksonVersion = '2.13.0'
+}
+
+dependencies {
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

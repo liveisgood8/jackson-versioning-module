@@ -2,12 +2,14 @@ package com.nexus.jacksonversioning;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.io.SerializedString;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.ResolvableSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
+import com.fasterxml.jackson.databind.ser.std.StdDelegatingSerializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,9 +130,32 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
             return new BeanPropertyWriterWrapper(beanPropertyWriter, writerWrapper.versioningPropertyMeta);
         }
 
+        writerWrapper = applyConverter(writerWrapper, bean, provider);
         writerWrapper = applySerializer(writerWrapper, bean, provider);
 
         return writerWrapper;
+    }
+
+    private BeanPropertyWriterWrapper applyConverter(
+            BeanPropertyWriterWrapper writerWrapper,
+            Object bean,
+            SerializerProvider provider
+    ) throws IOException {
+        var converterClass = writerWrapper.versioningPropertyMeta.getConverterClass();
+        if (converterClass == null) {
+            return writerWrapper;
+        }
+
+        try {
+            // TODO Fix instantiation of private classes
+            var converter = converterClass.getConstructor().newInstance();
+
+            var serializer = new StdDelegatingSerializer(converter);
+            return applySerializer(writerWrapper, serializer, bean, provider);
+        } catch (Exception e) {
+            wrapAndThrow(provider, e, bean, writerWrapper.beanPropertyWriter.getName());
+            return writerWrapper;
+        }
     }
 
     private BeanPropertyWriterWrapper applySerializer(
@@ -138,24 +163,33 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
             Object bean,
             SerializerProvider provider
     ) throws IOException {
-        if (writerWrapper.versioningPropertyMeta.getSerializerClass() == null) {
+        var serializerClass = writerWrapper.versioningPropertyMeta.getSerializerClass();
+        if (serializerClass == null) {
             return writerWrapper;
         }
 
         try {
-            var serializer = writerWrapper.versioningPropertyMeta.getSerializerClass()
-                    .getConstructor()
-                    .newInstance();
+            // TODO Fix instantiation of private classes
+            var serializer = serializerClass.getConstructor().newInstance();
 
-            BeanPropertyWriter beanPropertyWriter = new CustomBeanPropertyWriter(
-                    writerWrapper.beanPropertyWriter,
-                    serializer
-            );
-            return new BeanPropertyWriterWrapper(beanPropertyWriter, writerWrapper.versioningPropertyMeta);
+            return applySerializer(writerWrapper, serializer, bean, provider);
         } catch (Exception e) {
             wrapAndThrow(provider, e, bean, writerWrapper.beanPropertyWriter.getName());
             return writerWrapper;
         }
+    }
+
+    private BeanPropertyWriterWrapper applySerializer(
+            BeanPropertyWriterWrapper writerWrapper,
+            JsonSerializer<?> serializer,
+            Object bean,
+            SerializerProvider provider
+    ) throws IOException {
+        BeanPropertyWriter beanPropertyWriter = new CustomBeanPropertyWriter(
+                writerWrapper.beanPropertyWriter,
+                serializer
+        );
+        return new BeanPropertyWriterWrapper(beanPropertyWriter, writerWrapper.versioningPropertyMeta);
     }
 
     private static class BeanPropertyWriterWrapper {

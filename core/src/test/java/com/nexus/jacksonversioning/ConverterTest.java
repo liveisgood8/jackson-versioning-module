@@ -1,25 +1,20 @@
 package com.nexus.jacksonversioning;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.util.StdConverter;
 import com.nexus.jacksonversioning.annotation.JsonVersioned;
 import com.nexus.jacksonversioning.util.VersionConstant;
-import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import static com.nexus.jacksonversioning.util.TestUtils.assertSerializedJson;
 
-class SerializerTest {
+class ConverterTest {
 
     private static final TestObject TEST_OBJECT = new TestObject("650");
 
-    private static final String FIRST_VALUE = "3534";
+    private static final Integer FIRST_VALUE = 756767;
 
-    private static final String SECOND_VALUE = "8000";
+    private static final Double SECOND_VALUE = 324325.1;
 
     @Test
     void testForV1_0() throws JsonProcessingException {
@@ -33,7 +28,7 @@ class SerializerTest {
     @Test
     void testForV2_0() throws JsonProcessingException {
         assertSerializedJson(
-                String.format("{\"name\":\"%s\"}", FIRST_VALUE),
+                String.format("{\"name\":%d}", FIRST_VALUE),
                 TEST_OBJECT,
                 VersionConstant.V2_0
         );
@@ -42,7 +37,7 @@ class SerializerTest {
     @Test
     void testForV3_0() throws JsonProcessingException {
         assertSerializedJson(
-                String.format("{\"name\":\"%s\"}", SECOND_VALUE),
+                String.format("{\"name\":%.1f}", SECOND_VALUE),
                 TEST_OBJECT,
                 VersionConstant.V3_0
         );
@@ -53,12 +48,12 @@ class SerializerTest {
         @JsonVersioned(
                 since = VersionConstant.V2_0_STRING,
                 until = VersionConstant.V3_0_STRING,
-                serializer = FirstSerializer.class
+                converter = FirstConverter.class
         )
         @JsonVersioned(
                 since = VersionConstant.V3_0_STRING,
                 until = VersionConstant.V4_0_STRING,
-                serializer = SecondSerializer.class
+                converter = SecondConverter.class
         )
         public final String name;
 
@@ -66,27 +61,19 @@ class SerializerTest {
             this.name = name;
         }
 
-        public static class FirstSerializer extends JsonSerializer<String> {
+        public static class FirstConverter extends StdConverter<String, Integer> {
 
             @Override
-            public void serialize(
-                    String value,
-                    JsonGenerator gen,
-                    SerializerProvider provider
-            ) throws IOException {
-                gen.writeString(FIRST_VALUE);
+            public Integer convert(String value) {
+                return FIRST_VALUE;
             }
         }
 
-        public static class SecondSerializer extends JsonSerializer<String> {
+        public static class SecondConverter extends StdConverter<String, Double> {
 
             @Override
-            public void serialize(
-                    String value,
-                    JsonGenerator gen,
-                    SerializerProvider provider
-            ) throws IOException {
-                gen.writeString(SECOND_VALUE);
+            public Double convert(String value) {
+                return SECOND_VALUE;
             }
         }
     }

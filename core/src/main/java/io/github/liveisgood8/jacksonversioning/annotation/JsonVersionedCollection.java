@@ -14,7 +14,9 @@ import java.lang.annotation.Target;
 public @interface JsonVersionedCollection {
 
     /**
-     * Collection of json versioned annotations.
+     * Array of json versioned annotations.
+     *
+     * @return Array of annotations.
      */
     JsonVersioned[] value();
 }

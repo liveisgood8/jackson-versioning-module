@@ -1,9 +1,19 @@
 plugins {
     id 'application'
+    id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
     mavenCentral()
+}
+
+group = 'io.github.liveisgood8'
+version = '1.0.0'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 ext {
@@ -17,6 +27,66 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
 }
 
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'jackson-versioning-module'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Jackson versioning module'
+                description = 'Module which add ability to versioning properties on serialization to json.'
+                url = 'https://github.com/liveisgood8/jackson-versioning-module'
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'liveisgood8'
+                        name = 'Kirill Lemeshonok'
+                        email = 'lemeshonok12@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/liveisgood8/jackson-versioning-module.git'
+                    developerConnection = 'scm:git:ssh://github.com/liveisgood8/jackson-versioning-module.git'
+                    url = 'https://github.com/liveisgood8/jackson-versioning-module'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }

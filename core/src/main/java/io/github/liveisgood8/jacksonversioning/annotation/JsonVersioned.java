@@ -19,27 +19,36 @@ public @interface JsonVersioned {
 
     /**
      * Version at which the attribute is added.
+     *
+     * @return Since version string, i.e. v2.0.0
      */
     String since() default "";
 
     /**
      * Version at which the attribute is no longer used.
+     *
+     * @return Until version string, i.e. v3.0.0
      */
     String until() default "";
 
     /**
      * Attribute name in json.
+     *
+     * @return Name of attribute.
      */
     String name() default "";
 
     /**
      * Custom serializer for attribute.
+     *
+     * @return Serializer class.
      */
     Class<? extends JsonSerializer<?>> serializer() default JsonSerializer.None.class;
 
     /**
      * Converter for attribute.
-     * TODO Implement
+     *
+     * @return Converter class.
      */
     Class<? extends Converter<?, ?>> converter() default Converter.None.class;
 }

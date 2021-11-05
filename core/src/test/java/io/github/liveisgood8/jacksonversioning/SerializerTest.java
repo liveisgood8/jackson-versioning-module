@@ -63,7 +63,7 @@ class SerializerTest {
             this.name = name;
         }
 
-        public static class FirstSerializer extends JsonSerializer<String> {
+        private static class FirstSerializer extends JsonSerializer<String> {
 
             @Override
             public void serialize(
@@ -75,7 +75,7 @@ class SerializerTest {
             }
         }
 
-        public static class SecondSerializer extends JsonSerializer<String> {
+        private static class SecondSerializer extends JsonSerializer<String> {
 
             @Override
             public void serialize(

@@ -61,7 +61,7 @@ class ConverterTest {
             this.name = name;
         }
 
-        public static class FirstConverter extends StdConverter<String, Integer> {
+        private static class FirstConverter extends StdConverter<String, Integer> {
 
             @Override
             public Integer convert(String value) {
@@ -69,7 +69,7 @@ class ConverterTest {
             }
         }
 
-        public static class SecondConverter extends StdConverter<String, Double> {
+        private static class SecondConverter extends StdConverter<String, Double> {
 
             @Override
             public Double convert(String value) {

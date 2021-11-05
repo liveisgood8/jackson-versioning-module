@@ -147,8 +147,10 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
         }
 
         try {
-            // TODO Fix instantiation of private classes
-            var converter = converterClass.getConstructor().newInstance();
+            var converterConstructor = converterClass.getDeclaredConstructor();
+            converterConstructor.setAccessible(true);
+
+            var converter = converterConstructor.newInstance();
 
             var serializer = new StdDelegatingSerializer(converter);
             return applySerializer(writerWrapper, serializer, bean, provider);
@@ -169,8 +171,10 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
         }
 
         try {
-            // TODO Fix instantiation of private classes
-            var serializer = serializerClass.getConstructor().newInstance();
+            var serializerConstructor = serializerClass.getDeclaredConstructor();
+            serializerConstructor.setAccessible(true);
+
+            var serializer = serializerConstructor.newInstance();
 
             return applySerializer(writerWrapper, serializer, bean, provider);
         } catch (Exception e) {

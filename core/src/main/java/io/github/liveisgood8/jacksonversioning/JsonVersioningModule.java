@@ -1,4 +1,4 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;

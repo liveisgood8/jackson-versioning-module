@@ -1,4 +1,4 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import java.util.List;
 import java.util.Optional;

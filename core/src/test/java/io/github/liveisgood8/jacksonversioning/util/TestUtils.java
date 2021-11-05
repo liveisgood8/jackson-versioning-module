@@ -1,9 +1,9 @@
-package com.nexus.jacksonversioning.util;
+package io.github.liveisgood8.jacksonversioning.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nexus.jacksonversioning.Version;
+import io.github.liveisgood8.jacksonversioning.Version;
 
-import static com.nexus.jacksonversioning.util.ObjectMapperFactory.createObjectMapper;
+import static io.github.liveisgood8.jacksonversioning.util.ObjectMapperFactory.createObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TestUtils {

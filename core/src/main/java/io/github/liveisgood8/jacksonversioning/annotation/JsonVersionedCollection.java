@@ -1,4 +1,4 @@
-package com.nexus.jacksonversioning.annotation;
+package io.github.liveisgood8.jacksonversioning.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

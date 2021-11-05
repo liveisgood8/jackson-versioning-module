@@ -1,6 +1,6 @@
-package com.nexus.jacksonversioning.util;
+package io.github.liveisgood8.jacksonversioning.util;
 
-import com.nexus.jacksonversioning.Version;
+import io.github.liveisgood8.jacksonversioning.Version;
 
 public final class VersionConstant {
 

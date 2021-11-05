@@ -1,15 +1,14 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.nexus.jacksonversioning.annotation.JsonVersioned;
-import com.nexus.jacksonversioning.util.VersionConstant;
+import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
+import io.github.liveisgood8.jacksonversioning.util.TestUtils;
+import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-
-import static com.nexus.jacksonversioning.util.TestUtils.assertSerializedJson;
 
 class SerializerTest {
 
@@ -21,7 +20,7 @@ class SerializerTest {
 
     @Test
     void testForV1_0() throws JsonProcessingException {
-        assertSerializedJson(
+        TestUtils.assertSerializedJson(
                 String.format("{\"name\":\"%s\"}", TEST_OBJECT.name),
                 TEST_OBJECT,
                 VersionConstant.V1_0
@@ -30,7 +29,7 @@ class SerializerTest {
 
     @Test
     void testForV2_0() throws JsonProcessingException {
-        assertSerializedJson(
+        TestUtils.assertSerializedJson(
                 String.format("{\"name\":\"%s\"}", FIRST_VALUE),
                 TEST_OBJECT,
                 VersionConstant.V2_0
@@ -39,7 +38,7 @@ class SerializerTest {
 
     @Test
     void testForV3_0() throws JsonProcessingException {
-        assertSerializedJson(
+        TestUtils.assertSerializedJson(
                 String.format("{\"name\":\"%s\"}", SECOND_VALUE),
                 TEST_OBJECT,
                 VersionConstant.V3_0

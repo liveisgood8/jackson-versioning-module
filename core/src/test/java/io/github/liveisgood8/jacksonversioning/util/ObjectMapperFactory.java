@@ -1,8 +1,8 @@
-package com.nexus.jacksonversioning.util;
+package io.github.liveisgood8.jacksonversioning.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nexus.jacksonversioning.JsonVersioningModule;
-import com.nexus.jacksonversioning.Version;
+import io.github.liveisgood8.jacksonversioning.JsonVersioningModule;
+import io.github.liveisgood8.jacksonversioning.Version;
 
 public class ObjectMapperFactory {
 

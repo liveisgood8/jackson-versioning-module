@@ -1,11 +1,11 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.nexus.jacksonversioning.annotation.JsonVersioned;
-import com.nexus.jacksonversioning.util.VersionConstant;
+import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
+import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;
 
-import static com.nexus.jacksonversioning.util.ObjectMapperFactory.createObjectMapper;
+import static io.github.liveisgood8.jacksonversioning.util.ObjectMapperFactory.createObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -1,11 +1,11 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.util.Converter;
-import com.nexus.jacksonversioning.annotation.JsonVersioned;
-import com.nexus.jacksonversioning.annotation.JsonVersionedCollection;
+import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
+import io.github.liveisgood8.jacksonversioning.annotation.JsonVersionedCollection;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;

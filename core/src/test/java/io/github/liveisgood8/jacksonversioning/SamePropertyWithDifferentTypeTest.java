@@ -1,11 +1,10 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nexus.jacksonversioning.annotation.JsonVersioned;
-import com.nexus.jacksonversioning.util.VersionConstant;
+import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
+import io.github.liveisgood8.jacksonversioning.util.TestUtils;
+import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;
-
-import static com.nexus.jacksonversioning.util.TestUtils.assertSerializedJson;
 
 public class SamePropertyWithDifferentTypeTest {
 
@@ -13,7 +12,7 @@ public class SamePropertyWithDifferentTypeTest {
 
     @Test
     void testForV1_0() throws JsonProcessingException {
-        assertSerializedJson(
+        TestUtils.assertSerializedJson(
                 String.format("{\"amount\":\"%s\"}", TEST_OBJECT.amountLegacy),
                 TEST_OBJECT,
                 VersionConstant.V1_0
@@ -22,8 +21,8 @@ public class SamePropertyWithDifferentTypeTest {
 
     @Test
     void testForV2_0() throws JsonProcessingException {
-        assertSerializedJson(
-                String.format("{\"amount\":%d}", TEST_OBJECT.amount),
+        TestUtils.assertSerializedJson(
+                String.format("{\"amount\":{\"rub\":%d,\"usd\":%d}}", TEST_OBJECT.amount.rub, TEST_OBJECT.amount.usd),
                 TEST_OBJECT,
                 VersionConstant.V2_0
         );
@@ -34,11 +33,21 @@ public class SamePropertyWithDifferentTypeTest {
         public final String amountLegacy;
 
         @JsonVersioned(since = VersionConstant.V2_0_STRING)
-        public final Integer amount;
+        public final Amount amount;
 
         public TestObject(String amountLegacy, Integer amount) {
             this.amountLegacy = amountLegacy;
-            this.amount = amount;
+            this.amount = new Amount(amount, amount);
+        }
+    }
+
+    private static class Amount {
+        public final Integer rub;
+        public final Integer usd;
+
+        private Amount(Integer rub, Integer usd) {
+            this.rub = rub;
+            this.usd = usd;
         }
     }
 }

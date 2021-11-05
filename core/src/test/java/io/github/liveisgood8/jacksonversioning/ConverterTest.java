@@ -1,12 +1,12 @@
-package com.nexus.jacksonversioning;
+package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.util.StdConverter;
-import com.nexus.jacksonversioning.annotation.JsonVersioned;
-import com.nexus.jacksonversioning.util.VersionConstant;
+import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
+import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;
 
-import static com.nexus.jacksonversioning.util.TestUtils.assertSerializedJson;
+import static io.github.liveisgood8.jacksonversioning.util.TestUtils.assertSerializedJson;
 
 class ConverterTest {
 

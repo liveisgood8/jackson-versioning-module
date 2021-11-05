@@ -1,4 +1,4 @@
-package com.nexus.jacksonversioning.annotation;
+package io.github.liveisgood8.jacksonversioning.annotation;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.util.Converter;

@@ -55,4 +55,12 @@ public class JsonVersioningModule extends SimpleModule {
                 }
         );
     }
+
+    // TODO Implement custom annotation instrospector in future
+    //@Override
+    //public void setupModule(SetupContext context) {
+    //    super.setupModule(context);
+    //
+    //    context.insertAnnotationIntrospector(new VersioningAnnotationInstrospector());
+    //}
 }

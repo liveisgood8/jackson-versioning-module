@@ -2,7 +2,6 @@ package com.nexus.jacksonversioning;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.util.Converter;
-import java.util.Objects;
 
 public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
 
@@ -17,14 +16,6 @@ public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
     private Class<? extends JsonSerializer<?>> serializerClass = null;
 
     private Class<? extends Converter<?, ?>> converterClazz = null;
-
-    public static DefaultVersioningPropertyMeta of(Version since, Version until) {
-        return new DefaultVersioningPropertyMeta(since, until);
-    }
-
-    public static DefaultVersioningPropertyMeta empty() {
-        return EMPTY;
-    }
 
     private DefaultVersioningPropertyMeta() {
         this.since = null;
@@ -52,6 +43,14 @@ public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
         validateVersions();
     }
 
+    public static DefaultVersioningPropertyMeta of(Version since, Version until) {
+        return new DefaultVersioningPropertyMeta(since, until);
+    }
+
+    public static DefaultVersioningPropertyMeta empty() {
+        return EMPTY;
+    }
+
     private void validateVersions() {
         if (since == null || until == null) {
             return;
@@ -67,14 +66,6 @@ public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
         }
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSerializerClass(Class<? extends JsonSerializer<?>> serializerClass) {
-        this.serializerClass = serializerClass;
-    }
-
     public void setConverterClazz(Class<? extends Converter<?, ?>> converterClazz) {
         this.converterClazz = converterClazz;
     }
@@ -83,9 +74,17 @@ public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public Class<? extends JsonSerializer<?>> getSerializerClass() {
         return serializerClass;
+    }
+
+    public void setSerializerClass(Class<? extends JsonSerializer<?>> serializerClass) {
+        this.serializerClass = serializerClass;
     }
 
     @Override

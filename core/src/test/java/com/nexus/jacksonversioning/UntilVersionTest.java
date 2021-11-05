@@ -1,7 +1,6 @@
 package com.nexus.jacksonversioning;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nexus.jacksonversioning.annotation.JsonVersioned;
 import com.nexus.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;

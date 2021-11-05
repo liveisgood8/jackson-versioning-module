@@ -2,7 +2,6 @@ package com.nexus.jacksonversioning;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class VersioningPropertyMetaCollection {
@@ -11,20 +10,20 @@ public class VersioningPropertyMetaCollection {
 
     private final List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet;
 
-    public static VersioningPropertyMetaCollection of(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
-        return new VersioningPropertyMetaCollection(versioningPropertyMetaSet);
-    }
-
-    public static VersioningPropertyMetaCollection empty() {
-        return EMPTY;
-    }
-
     private VersioningPropertyMetaCollection() {
         this.versioningPropertyMetaSet = null;
     }
 
     private VersioningPropertyMetaCollection(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
         this.versioningPropertyMetaSet = versioningPropertyMetaSet;
+    }
+
+    public static VersioningPropertyMetaCollection of(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
+        return new VersioningPropertyMetaCollection(versioningPropertyMetaSet);
+    }
+
+    public static VersioningPropertyMetaCollection empty() {
+        return EMPTY;
     }
 
     public Optional<VersionPropertyMeta> getForVersion(Version version) {

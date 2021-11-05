@@ -2,6 +2,7 @@ package com.nexus.jacksonversioning;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.util.Converter;
+import java.util.Objects;
 
 public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
 
@@ -106,5 +107,30 @@ public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
         }
 
         return since != null && version.compareTo(since) >= 0;
+    }
+
+    @Override
+    public String toString() {
+        var builder = new StringBuilder();
+        if (since == null && until == null) {
+            builder.append("<empty>");
+        }
+        if (since != null) {
+            builder.append("since ");
+            builder.append(since);
+        }
+        if (until != null) {
+            if (since != null) {
+                builder.append(" - ");
+            }
+            builder.append("until ");
+            builder.append(until);
+        }
+        if (name != null && !name.isBlank()) {
+            builder.append(" {");
+            builder.append(name);
+            builder.append("}");
+        }
+        return builder.toString();
     }
 }

@@ -1,5 +1,6 @@
 package com.nexus.jacksonversioning;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -8,9 +9,9 @@ public class VersioningPropertyMetaCollection {
 
     private static final VersioningPropertyMetaCollection EMPTY = new VersioningPropertyMetaCollection();
 
-    private final Set<DefaultVersioningPropertyMeta> versioningPropertyMetaSet;
+    private final List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet;
 
-    public static VersioningPropertyMetaCollection of(Set<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
+    public static VersioningPropertyMetaCollection of(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
         return new VersioningPropertyMetaCollection(versioningPropertyMetaSet);
     }
 
@@ -22,7 +23,7 @@ public class VersioningPropertyMetaCollection {
         this.versioningPropertyMetaSet = null;
     }
 
-    private VersioningPropertyMetaCollection(Set<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
+    private VersioningPropertyMetaCollection(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
         this.versioningPropertyMetaSet = versioningPropertyMetaSet;
     }
 
@@ -34,10 +35,14 @@ public class VersioningPropertyMetaCollection {
 
         var propertyMetaSet = versioningPropertyMetaSet.stream()
                 .filter(propertyMeta -> propertyMeta.isWithin(version))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         if (propertyMetaSet.size() > 1) {
-            throw new IllegalArgumentException("Multiple json version definitions found for version: " + version);
+            throw new IllegalArgumentException(
+                    "For version: " + version + " founded multiple definitions: " + propertyMetaSet.stream()
+                            .map(DefaultVersioningPropertyMeta::toString)
+                            .collect(Collectors.joining(","))
+            );
         }
 
         return propertyMetaSet.isEmpty()

@@ -8,6 +8,7 @@ import com.nexus.jacksonversioning.annotation.JsonVersioned;
 import com.nexus.jacksonversioning.annotation.JsonVersionedCollection;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class VersioningPropertyMetaGenerator {
 
         var jsonVersioned = property.getAnnotation(JsonVersioned.class);
         if (jsonVersioned != null) {
-            return VersioningPropertyMetaCollection.of(Set.of(fromAnnotation(jsonVersioned)));
+            return VersioningPropertyMetaCollection.of(List.of(fromAnnotation(jsonVersioned)));
         }
 
         return VersioningPropertyMetaCollection.empty();
@@ -36,7 +37,7 @@ public class VersioningPropertyMetaGenerator {
 
         var jsonVersioned = getAnnotation(propertyDefinition, JsonVersioned.class);
         if (jsonVersioned != null) {
-            return VersioningPropertyMetaCollection.of(Set.of(fromAnnotation(jsonVersioned)));
+            return VersioningPropertyMetaCollection.of(List.of(fromAnnotation(jsonVersioned)));
         }
 
         return VersioningPropertyMetaCollection.empty();
@@ -57,10 +58,10 @@ public class VersioningPropertyMetaGenerator {
     }
 
     private static VersioningPropertyMetaCollection fromAnnotation(JsonVersionedCollection jsonVersionedCollection) {
-        var metaSet = Arrays.stream(jsonVersionedCollection.value())
+        var metaList = Arrays.stream(jsonVersionedCollection.value())
                 .map(VersioningPropertyMetaGenerator::fromAnnotation)
-                .collect(Collectors.toSet());
-        return VersioningPropertyMetaCollection.of(metaSet);
+                .collect(Collectors.toList());
+        return VersioningPropertyMetaCollection.of(metaList);
     }
 
     private static DefaultVersioningPropertyMeta fromAnnotation(JsonVersioned jsonVersioned) {

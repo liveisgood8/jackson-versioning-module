@@ -9,6 +9,7 @@ repositories {
 }
 
 group = 'io.github.liveisgood8'
+archivesBaseName = 'jackson-versioning-module'
 version = '1.0.0'
 
 java {
@@ -78,7 +79,10 @@ publishing {
 
     repositories {
         maven {
-            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username sonatypeUsername
                 password sonatypePassword

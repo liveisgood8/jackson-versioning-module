@@ -1,10 +1,31 @@
 Introduction
 ================================================
-Jackson module which provide versioning feature to object mapper.
-It gives you an ability to specify since and until version for POJOs classes.
+![Maven central badge](https://img.shields.io/maven-central/v/io.github.liveisgood8/jackson-versioning-module)
 
-Using
+Jackson module which provide versioning feature to object mapper. It gives you an ability to specify since and until
+version for POJOs classes.
+
+Getting started
 ================================================
+
+## Adding library
+
+To add a dependency on Jackson versioning module using Maven, use the following:
+
+```xml
+
+<dependency>
+    <groupId>io.github.liveisgood8</groupId>
+    <artifactId>jackson-versioning-module</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+To add a dependency using Gradle:
+
+```groovy
+implementation 'io.github.liveisgood8:jackson-versioning-module:1.0.0'
+```
 
 ## Register module
 
@@ -15,7 +36,7 @@ public class ObjectMapperProvider {
 
     public static ObjectMapper createObjectMapper(Version version) {
         var objectMapper = new ObjectMapper();
-        
+
         // At this line module with specified version is registered
         objectMapper.registerModule(new JsonVersioningModule("v1.5.0"));
 
@@ -30,7 +51,7 @@ You can use versioning feature for serialize POJO classes.
 
 ```java
 public class ModelData {
-    
+
     @JsonVersioned(since = "v4.2.0")
     private String name;
 
@@ -50,8 +71,8 @@ public class ModelData {
     private Integer amountLegacy;
 
     @JsonVersioned(since = "v3.0.0")
-    private Double amount;  
-    
+    private Double amount;
+
     // constructors, getters, setters...
 }
 ```

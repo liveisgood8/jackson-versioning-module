@@ -3,7 +3,7 @@ package io.github.liveisgood8.jacksonversioning;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.util.Converter;
 
-public class DefaultVersioningPropertyMeta implements VersionPropertyMeta {
+public class DefaultVersioningPropertyMeta implements VersioningPropertyMeta {
 
     private static final DefaultVersioningPropertyMeta EMPTY = new DefaultVersioningPropertyMeta();
 

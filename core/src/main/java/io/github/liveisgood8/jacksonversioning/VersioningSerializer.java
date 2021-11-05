@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ser.std.StdDelegatingSerializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 public class VersioningSerializer extends BeanSerializer implements ResolvableSerializer {
 
@@ -46,7 +47,10 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
                 ? null
                 : findPropertyFilter(provider, _propertyFilterId, bean);
 
-        Collection<BeanPropertyWriterWrapper> beanPropertyWriterWrappers = getBeanPropertyWriterWrappers(provider);
+        Collection<BeanPropertyWriterWrapper> beanPropertyWriterWrappers = getBeanPropertyWriterWrappers(
+                bean,
+                provider
+        );
         for (var writerWrapper : beanPropertyWriterWrappers) {
             writeProperty(writerWrapper, filter, bean, gen, provider);
         }
@@ -54,25 +58,40 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
         writeAnyGetter(filter, bean, gen, provider);
     }
 
-    private Collection<BeanPropertyWriterWrapper> getBeanPropertyWriterWrappers(SerializerProvider provider) {
+    private Collection<BeanPropertyWriterWrapper> getBeanPropertyWriterWrappers(
+            Object bean,
+            SerializerProvider provider
+    ) throws IOException {
         BeanPropertyWriter[] beanPropertyWriters = _filteredProps != null && provider.getActiveView() != null
                 ? _filteredProps
                 : _props;
 
-
         Collection<BeanPropertyWriterWrapper> beanPropertyWriterWrappers = new ArrayList<>();
         for (BeanPropertyWriter beanPropertyWriter : beanPropertyWriters) {
-            VersioningPropertyMetaGenerator
-                    .forProperty(beanPropertyWriter)
-                    .getForVersion(version)
+            getVersioningPropertyMeta(beanPropertyWriter, bean, provider)
                     .ifPresent(
-                            versionPropertyMeta -> beanPropertyWriterWrappers.add(
-                                    new BeanPropertyWriterWrapper(beanPropertyWriter, versionPropertyMeta)
+                            versioningPropertyMeta -> beanPropertyWriterWrappers.add(
+                                    new BeanPropertyWriterWrapper(beanPropertyWriter, versioningPropertyMeta)
                             )
                     );
         }
 
         return beanPropertyWriterWrappers;
+    }
+
+    private Optional<VersioningPropertyMeta> getVersioningPropertyMeta(
+            BeanPropertyWriter beanPropertyWriter,
+            Object bean,
+            SerializerProvider provider
+    ) throws IOException {
+        try {
+            return VersioningPropertyMetaGenerator
+                    .forProperty(beanPropertyWriter)
+                    .getForVersion(version);
+        } catch (Exception e) {
+            wrapAndThrow(provider, e, bean, beanPropertyWriter.getName());
+            return Optional.empty();
+        }
     }
 
     private void writeProperty(
@@ -120,7 +139,7 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
             Object bean,
             SerializerProvider provider
     ) throws IOException {
-        VersionPropertyMeta meta = writerWrapper.versioningPropertyMeta;
+        VersioningPropertyMeta meta = writerWrapper.versioningPropertyMeta;
         String name = meta.getName();
         if (name != null && !name.isBlank()) {
             var beanPropertyWriter = new CustomBeanPropertyWriter(
@@ -198,11 +217,11 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
 
     private static class BeanPropertyWriterWrapper {
         private final BeanPropertyWriter beanPropertyWriter;
-        private final VersionPropertyMeta versioningPropertyMeta;
+        private final VersioningPropertyMeta versioningPropertyMeta;
 
         public BeanPropertyWriterWrapper(
                 BeanPropertyWriter beanPropertyWriter,
-                VersionPropertyMeta versioningPropertyMeta
+                VersioningPropertyMeta versioningPropertyMeta
         ) {
             this.beanPropertyWriter = beanPropertyWriter;
             this.versioningPropertyMeta = versioningPropertyMeta;

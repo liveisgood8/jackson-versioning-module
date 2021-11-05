@@ -46,7 +46,12 @@ public class SinceAndUntilCombinationTest {
                 () -> mapper.writeValueAsString(TEST_OBJECT_WITH_INVALID_VERSION_RANGE)
         );
 
-        assertEquals("Since version (v4.0) should be less than until version (v1.0)", exception.getMessage());
+        assertEquals(
+                "Since version (v4.0) should be less than until version (v1.0) " +
+                        "(through reference chain: " +
+                        "io.github.liveisgood8.jacksonversioning.SinceAndUntilCombinationTest$TestObjectWithInvalidVersionRange[\"name\"])",
+                exception.getMessage()
+        );
     }
 
     private static class TestObject {

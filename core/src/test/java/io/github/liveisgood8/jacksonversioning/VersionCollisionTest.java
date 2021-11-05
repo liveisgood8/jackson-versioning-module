@@ -20,7 +20,12 @@ class VersionCollisionTest {
                 () -> mapper.writeValueAsString(new FirstTestObject())
         );
 
-        assertEquals("For version: v3.0 founded multiple definitions: since v2.0,since v3.0", exception.getMessage());
+        assertEquals(
+                "For version: v3.0 founded multiple definitions: since v2.0,since v3.0 " +
+                        "(through reference chain: " +
+                        "io.github.liveisgood8.jacksonversioning.VersionCollisionTest$FirstTestObject[\"amount\"])",
+                exception.getMessage()
+        );
     }
 
     @Test
@@ -33,7 +38,9 @@ class VersionCollisionTest {
         );
 
         assertEquals(
-                "For version: v3.0 founded multiple definitions: since v2.0 - until v5.0,since v3.0 - until v4.0",
+                "For version: v3.0 founded multiple definitions: since v2.0 - until v5.0,since v3.0 - until v4.0 " +
+                        "(through reference chain: " +
+                        "io.github.liveisgood8.jacksonversioning.VersionCollisionTest$SecondTestObject[\"amount\"])",
                 exception.getMessage()
         );
     }
@@ -48,7 +55,9 @@ class VersionCollisionTest {
         );
 
         assertEquals(
-                "For version: v3.0 founded multiple definitions: since v2.0 - until v5.0,since v2.0 - until v4.0",
+                "For version: v3.0 founded multiple definitions: since v2.0 - until v5.0,since v2.0 - until v4.0 " +
+                        "(through reference chain: " +
+                        "io.github.liveisgood8.jacksonversioning.VersionCollisionTest$ThirdTestObject[\"amount\"])",
                 exception.getMessage()
         );
     }
@@ -63,7 +72,9 @@ class VersionCollisionTest {
         );
 
         assertEquals(
-                "For version: v4.0 founded multiple definitions: since v2.0 - until v5.0,since v4.0 - until v5.0",
+                "For version: v4.0 founded multiple definitions: since v2.0 - until v5.0,since v4.0 - until v5.0 " +
+                        "(through reference chain: " +
+                        "io.github.liveisgood8.jacksonversioning.VersionCollisionTest$FourthTestObject[\"amount\"])",
                 exception.getMessage()
         );
     }

@@ -26,7 +26,7 @@ public class VersioningPropertyMetaCollection {
         return EMPTY;
     }
 
-    public Optional<VersionPropertyMeta> getForVersion(Version version) {
+    public Optional<VersioningPropertyMeta> getForVersion(Version version) {
         if (versioningPropertyMetaSet == null) {
             // Available for any version
             return Optional.of(DefaultVersioningPropertyMeta.empty());

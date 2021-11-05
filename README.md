@@ -38,7 +38,9 @@ public class ObjectMapperProvider {
         var objectMapper = new ObjectMapper();
 
         // At this line module with specified version is registered
-        objectMapper.registerModule(new JsonVersioningModule("v1.5.0"));
+        objectMapper.registerModule(
+                new JsonVersioningModule(new SimpleVersionHolder("v1.5.0"))
+        );
 
         return objectMapper;
     }
@@ -151,6 +153,78 @@ public class SerializerExampleModel {
         ) throws IOException {
             gen.writeString("name2");
         }
+    }
+}
+```
+
+## Version holder
+
+Version holder provide information about current version for module.
+
+### SimpleVersionHolder
+
+Hold constant version.
+
+```java
+public class Example {
+    
+    public static ObjectMapper createObjectMapper() {
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(
+                new JsonVersioningModule(new SimpleVersionHolder("v1.5.0"))
+        );
+        return objectMapper;
+    }
+}
+```
+
+### ThreadLocalVersionHolder
+
+Hold constant version locally for thread.
+
+```java
+public class Example {
+
+    public static ObjectMapper createObjectMapper() {
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(
+                new JsonVersioningModule(ThreadLocalHolder.get())
+        );
+        return objectMapper;
+    }
+}
+```
+
+Somewhere in application code (for example in spring request filter):
+```java
+public class Filter {
+
+    public void doFilter() {
+        Version version = getCurrentVersion();
+        ThreadLocalVersionHolder.initialize(version);
+        
+        // ...
+    }
+    
+    private Version getCurrentVersion() {
+        // ...
+    }
+}
+```
+
+### InheritableThreadLocalVersionHolder
+
+Same as `ThreadLocalVersionHolder`, but version information is diving into child threads.
+
+```java
+public class Example {
+
+    public static ObjectMapper createObjectMapper() {
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(
+                new JsonVersioningModule(InheritableThreadLocalHolder.get())
+        );
+        return objectMapper;
     }
 }
 ```

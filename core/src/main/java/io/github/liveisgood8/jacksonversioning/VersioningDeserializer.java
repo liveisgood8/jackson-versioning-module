@@ -7,31 +7,33 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializer;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
+import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
 import java.io.IOException;
 import java.util.Optional;
 
 public class VersioningDeserializer extends BeanDeserializer {
 
-    private final Version version;
+    private final VersionHolder versionHolder;
 
     private final BeanDescription beanDescription;
 
     private final BeanDeserializer deserializer;
 
     public VersioningDeserializer(
-            Version version,
+            VersionHolder versionHolder,
             BeanDescription beanDescription,
             BeanDeserializer deserializer
     ) {
         super(deserializer);
-        this.version = version;
+        this.versionHolder = versionHolder;
         this.beanDescription = beanDescription;
         this.deserializer = deserializer;
     }
 
     @Override
     public Object deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
-        final ObjectNode jsonNode = jsonParser.readValueAsTree();
+        Version version = versionHolder.getVersion();
+        ObjectNode jsonNode = jsonParser.readValueAsTree();
         Optional<BeanPropertyDefinition> propertyNotInVersion = beanDescription.findProperties()
                 .stream()
                 .filter(

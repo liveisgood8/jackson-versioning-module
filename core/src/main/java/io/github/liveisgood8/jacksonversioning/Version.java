@@ -1,12 +1,16 @@
 package io.github.liveisgood8.jacksonversioning;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Describe version in semver format.
+ */
 public class Version implements Comparable<Version> {
+
+    private static final Version EMPTY = new Version(-1, -1, -1);
 
     private final int major;
 
@@ -14,23 +18,37 @@ public class Version implements Comparable<Version> {
 
     private final int patch;
 
-    private final boolean patchUsed;
-
-    public Version(int major, int minor, int patch) {
+    private Version(int major, int minor, int patch) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
-        this.patchUsed = true;
     }
 
-    public Version(int major, int minor) {
-        this.major = major;
-        this.minor = minor;
-        this.patch = 0;
-        this.patchUsed = false;
+    public static Version empty() {
+        return EMPTY;
     }
 
-    @JsonCreator
+    public static Version of(int major, int minor) {
+        validateThatPositive(major);
+        validateThatPositive(minor);
+
+        return new Version(major, minor, -1);
+    }
+
+    public static Version of(int major, int minor, int patch) {
+        validateThatPositive(major);
+        validateThatPositive(minor);
+        validateThatPositive(patch);
+
+        return new Version(major, minor, patch);
+    }
+
+    private static void validateThatPositive(int part) {
+        if (part < 0) {
+            throw new IllegalArgumentException("Version part should be positive number");
+        }
+    }
+
     public static Version fromString(String version) {
         if (version == null || version.isBlank()) {
             throw new IllegalArgumentException("Version could not be null or empty");
@@ -66,9 +84,9 @@ public class Version implements Comparable<Version> {
 
         if (versionPartsInteger.size() > 2) {
             int patch = versionPartsInteger.get(2);
-            return new Version(major, minor, patch);
+            return Version.of(major, minor, patch);
         } else {
-            return new Version(major, minor);
+            return Version.of(major, minor);
         }
     }
 
@@ -112,7 +130,11 @@ public class Version implements Comparable<Version> {
 
     @JsonValue
     public String toString() {
-        if (patchUsed) {
+        if (this == EMPTY) {
+            return "<empty>";
+        }
+
+        if (patch >= 0) {
             return String.format("v%d.%d.%d", major, minor, patch);
         } else {
             return String.format("v%d.%d", major, minor);

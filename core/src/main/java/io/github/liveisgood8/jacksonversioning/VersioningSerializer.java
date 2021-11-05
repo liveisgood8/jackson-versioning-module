@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.ResolvableSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.ser.std.StdDelegatingSerializer;
+import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,11 +18,11 @@ import java.util.Optional;
 
 public class VersioningSerializer extends BeanSerializer implements ResolvableSerializer {
 
-    private final Version version;
+    private final VersionHolder versionHolder;
 
-    public VersioningSerializer(Version version, BeanSerializerBase serializer) {
+    public VersioningSerializer(VersionHolder versionHolder, BeanSerializerBase serializer) {
         super(serializer);
-        this.version = version;
+        this.versionHolder = versionHolder;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
         try {
             return VersioningPropertyMetaGenerator
                     .forProperty(beanPropertyWriter)
-                    .getForVersion(version);
+                    .getForVersion(versionHolder.getVersion());
         } catch (Exception e) {
             wrapAndThrow(provider, e, bean, beanPropertyWriter.getName());
             return Optional.empty();
@@ -172,7 +173,7 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
             var converter = converterConstructor.newInstance();
 
             var serializer = new StdDelegatingSerializer(converter);
-            return applySerializer(writerWrapper, serializer, bean, provider);
+            return applySerializer(writerWrapper, serializer);
         } catch (Exception e) {
             wrapAndThrow(provider, e, bean, writerWrapper.beanPropertyWriter.getName());
             return writerWrapper;
@@ -195,7 +196,7 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
 
             var serializer = serializerConstructor.newInstance();
 
-            return applySerializer(writerWrapper, serializer, bean, provider);
+            return applySerializer(writerWrapper, serializer);
         } catch (Exception e) {
             wrapAndThrow(provider, e, bean, writerWrapper.beanPropertyWriter.getName());
             return writerWrapper;
@@ -204,10 +205,8 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
 
     private BeanPropertyWriterWrapper applySerializer(
             BeanPropertyWriterWrapper writerWrapper,
-            JsonSerializer<?> serializer,
-            Object bean,
-            SerializerProvider provider
-    ) throws IOException {
+            JsonSerializer<?> serializer
+    ) {
         BeanPropertyWriter beanPropertyWriter = new CustomBeanPropertyWriter(
                 writerWrapper.beanPropertyWriter,
                 serializer

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.util.Converter;
 import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
 import io.github.liveisgood8.jacksonversioning.annotation.JsonVersionedCollection;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
@@ -15,12 +16,12 @@ import java.util.stream.Collectors;
 public class VersioningPropertyMetaGenerator {
 
     public static VersioningPropertyMetaCollection forProperty(BeanProperty property) {
-        var jsonVersionedCollection = property.getAnnotation(JsonVersionedCollection.class);
+        JsonVersionedCollection jsonVersionedCollection = property.getAnnotation(JsonVersionedCollection.class);
         if (jsonVersionedCollection != null) {
             return fromAnnotation(jsonVersionedCollection);
         }
 
-        var jsonVersioned = property.getAnnotation(JsonVersioned.class);
+        JsonVersioned jsonVersioned = property.getAnnotation(JsonVersioned.class);
         if (jsonVersioned != null) {
             return VersioningPropertyMetaCollection.of(List.of(fromAnnotation(jsonVersioned)));
         }
@@ -29,12 +30,15 @@ public class VersioningPropertyMetaGenerator {
     }
 
     public static VersioningPropertyMetaCollection forPropertyDefinition(BeanPropertyDefinition propertyDefinition) {
-        var jsonVersionedCollection = getAnnotation(propertyDefinition, JsonVersionedCollection.class);
+        JsonVersionedCollection jsonVersionedCollection = getAnnotation(
+                propertyDefinition,
+                JsonVersionedCollection.class
+        );
         if (jsonVersionedCollection != null) {
             return fromAnnotation(jsonVersionedCollection);
         }
 
-        var jsonVersioned = getAnnotation(propertyDefinition, JsonVersioned.class);
+        JsonVersioned jsonVersioned = getAnnotation(propertyDefinition, JsonVersioned.class);
         if (jsonVersioned != null) {
             return VersioningPropertyMetaCollection.of(List.of(fromAnnotation(jsonVersioned)));
         }
@@ -57,7 +61,7 @@ public class VersioningPropertyMetaGenerator {
     }
 
     private static VersioningPropertyMetaCollection fromAnnotation(JsonVersionedCollection jsonVersionedCollection) {
-        var metaList = Arrays.stream(jsonVersionedCollection.value())
+        List<DefaultVersioningPropertyMeta> metaList = Arrays.stream(jsonVersionedCollection.value())
                 .map(VersioningPropertyMetaGenerator::fromAnnotation)
                 .collect(Collectors.toList());
         return VersioningPropertyMetaCollection.of(metaList);
@@ -70,8 +74,8 @@ public class VersioningPropertyMetaGenerator {
 
         Version sinceVersion = getVersion(jsonVersioned.since());
         Version untilVersion = getVersion(jsonVersioned.until());
-        var converterClazz = jsonVersioned.converter();
-        var serializerClazz = jsonVersioned.serializer();
+        Class<? extends Converter<?, ?>> converterClazz = jsonVersioned.converter();
+        Class<? extends JsonSerializer<?>> serializerClazz = jsonVersioned.serializer();
 
         DefaultVersioningPropertyMeta meta;
         if (sinceVersion == null && untilVersion == null) {

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -45,8 +46,11 @@ public class VersioningDeserializer extends BeanDeserializer {
                 .findFirst();
 
         if (propertyNotInVersion.isPresent()) {
-            throw ctx.mappingException("Property \"%s\" is not in version %s",
-                    propertyNotInVersion.get().getName(), version.toString()
+            ctx.reportInputMismatch(
+                    ctx.getContextualType(),
+                    "Property \"%s\" is not in version %s",
+                    propertyNotInVersion.get().getName(),
+                    version.toString()
             );
         }
 

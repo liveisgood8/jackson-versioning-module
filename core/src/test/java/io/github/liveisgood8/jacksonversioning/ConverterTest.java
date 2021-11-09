@@ -6,6 +6,8 @@ import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
 import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
 import static io.github.liveisgood8.jacksonversioning.util.TestUtils.assertSerializedJson;
 
 class ConverterTest {
@@ -37,7 +39,7 @@ class ConverterTest {
     @Test
     void testForV3_0() throws JsonProcessingException {
         assertSerializedJson(
-                String.format("{\"name\":%.1f}", SECOND_VALUE),
+                String.format(Locale.US, "{\"name\":%.1f}", SECOND_VALUE),
                 TEST_OBJECT,
                 VersionConstant.V3_0
         );

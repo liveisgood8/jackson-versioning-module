@@ -17,6 +17,11 @@ java {
     withSourcesJar()
 }
 
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
 ext {
     junitVersion = '5.7.2'
     jacksonVersion = '2.13.0'
@@ -81,11 +86,17 @@ publishing {
         maven {
             def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
             def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            def currentSonatypeUsername = project.hasProperty('SONATYPE_USER')
+                    ? project.property('SONATYPE_USER').toString()
+                    : 'SONATYPE_USER'
+            def currentSonatypePassword = project.hasProperty('SONATYPE_PASSWORD')
+                    ? project.property('SONATYPE_PASSWORD').toString()
+                    : 'SONATYPE_PASSWORD'
 
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username sonatypeUsername
-                password sonatypePassword
+                username currentSonatypeUsername
+                password currentSonatypePassword
             }
         }
     }

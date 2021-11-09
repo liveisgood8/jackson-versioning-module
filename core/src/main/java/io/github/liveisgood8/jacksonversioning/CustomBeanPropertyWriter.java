@@ -8,6 +8,8 @@ public class CustomBeanPropertyWriter extends BeanPropertyWriter {
 
     public CustomBeanPropertyWriter(BeanPropertyWriter base, JsonSerializer<?> serializer) {
         super(base);
+
+        //noinspection unchecked
         this._serializer = (JsonSerializer<Object>) serializer;
     }
 

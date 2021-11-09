@@ -10,8 +10,11 @@ import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.ResolvableSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.ser.std.StdDelegatingSerializer;
+import com.fasterxml.jackson.databind.util.Converter;
 import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
+
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -52,7 +55,7 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
                 bean,
                 provider
         );
-        for (var writerWrapper : beanPropertyWriterWrappers) {
+        for (BeanPropertyWriterWrapper writerWrapper : beanPropertyWriterWrappers) {
             writeProperty(writerWrapper, filter, bean, gen, provider);
         }
 
@@ -142,8 +145,8 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
     ) throws IOException {
         VersioningPropertyMeta meta = writerWrapper.versioningPropertyMeta;
         String name = meta.getName();
-        if (name != null && !name.isBlank()) {
-            var beanPropertyWriter = new CustomBeanPropertyWriter(
+        if (name != null && !name.isEmpty()) {
+            CustomBeanPropertyWriter beanPropertyWriter = new CustomBeanPropertyWriter(
                     writerWrapper.beanPropertyWriter,
                     new SerializedString(name)
             );
@@ -161,18 +164,18 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
             Object bean,
             SerializerProvider provider
     ) throws IOException {
-        var converterClass = writerWrapper.versioningPropertyMeta.getConverterClass();
+        Class<? extends Converter<?, ?>> converterClass = writerWrapper.versioningPropertyMeta.getConverterClass();
         if (converterClass == null) {
             return writerWrapper;
         }
 
         try {
-            var converterConstructor = converterClass.getDeclaredConstructor();
+            Constructor<? extends Converter<?, ?>> converterConstructor = converterClass.getDeclaredConstructor();
             converterConstructor.setAccessible(true);
 
-            var converter = converterConstructor.newInstance();
+            Converter<?, ?> converter = converterConstructor.newInstance();
 
-            var serializer = new StdDelegatingSerializer(converter);
+            JsonSerializer<?> serializer = new StdDelegatingSerializer(converter);
             return applySerializer(writerWrapper, serializer);
         } catch (Exception e) {
             wrapAndThrow(provider, e, bean, writerWrapper.beanPropertyWriter.getName());
@@ -185,16 +188,16 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
             Object bean,
             SerializerProvider provider
     ) throws IOException {
-        var serializerClass = writerWrapper.versioningPropertyMeta.getSerializerClass();
+        Class<? extends JsonSerializer<?>> serializerClass = writerWrapper.versioningPropertyMeta.getSerializerClass();
         if (serializerClass == null) {
             return writerWrapper;
         }
 
         try {
-            var serializerConstructor = serializerClass.getDeclaredConstructor();
+            Constructor<? extends JsonSerializer<?>> serializerConstructor = serializerClass.getDeclaredConstructor();
             serializerConstructor.setAccessible(true);
 
-            var serializer = serializerConstructor.newInstance();
+            JsonSerializer<?> serializer = serializerConstructor.newInstance();
 
             return applySerializer(writerWrapper, serializer);
         } catch (Exception e) {

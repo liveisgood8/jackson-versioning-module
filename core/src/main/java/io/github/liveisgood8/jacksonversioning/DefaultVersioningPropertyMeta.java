@@ -110,7 +110,7 @@ public class DefaultVersioningPropertyMeta implements VersioningPropertyMeta {
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         if (since == null && until == null) {
             builder.append("<empty>");
         }

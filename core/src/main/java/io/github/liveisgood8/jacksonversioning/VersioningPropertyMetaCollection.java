@@ -8,17 +8,17 @@ public class VersioningPropertyMetaCollection {
 
     private static final VersioningPropertyMetaCollection EMPTY = new VersioningPropertyMetaCollection();
 
-    private final List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet;
+    private final List<? extends VersioningPropertyMeta> versioningPropertyMetaSet;
 
     private VersioningPropertyMetaCollection() {
         this.versioningPropertyMetaSet = null;
     }
 
-    private VersioningPropertyMetaCollection(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
+    private VersioningPropertyMetaCollection(List<? extends VersioningPropertyMeta> versioningPropertyMetaSet) {
         this.versioningPropertyMetaSet = versioningPropertyMetaSet;
     }
 
-    public static VersioningPropertyMetaCollection of(List<DefaultVersioningPropertyMeta> versioningPropertyMetaSet) {
+    public static VersioningPropertyMetaCollection of(List<? extends VersioningPropertyMeta> versioningPropertyMetaSet) {
         return new VersioningPropertyMetaCollection(versioningPropertyMetaSet);
     }
 
@@ -32,14 +32,14 @@ public class VersioningPropertyMetaCollection {
             return Optional.of(DefaultVersioningPropertyMeta.empty());
         }
 
-        var propertyMetaSet = versioningPropertyMetaSet.stream()
+        List<VersioningPropertyMeta> propertyMetaSet = versioningPropertyMetaSet.stream()
                 .filter(propertyMeta -> propertyMeta.isWithin(version))
                 .collect(Collectors.toList());
 
         if (propertyMetaSet.size() > 1) {
             throw new IllegalArgumentException(
                     "For version: " + version + " founded multiple definitions: " + propertyMetaSet.stream()
-                            .map(DefaultVersioningPropertyMeta::toString)
+                            .map(VersioningPropertyMeta::toString)
                             .collect(Collectors.joining(","))
             );
         }

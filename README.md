@@ -35,7 +35,7 @@ At the beginning you should register versioning module in your Jackson object ma
 public class ObjectMapperProvider {
 
     public static ObjectMapper createObjectMapper(Version version) {
-        var objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         // At this line module with specified version is registered
         objectMapper.registerModule(
@@ -169,7 +169,7 @@ Hold constant version.
 public class Example {
     
     public static ObjectMapper createObjectMapper() {
-        var objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(
                 new JsonVersioningModule(new SimpleVersionHolder("v1.5.0"))
         );
@@ -186,7 +186,7 @@ Hold constant version locally for thread.
 public class Example {
 
     public static ObjectMapper createObjectMapper() {
-        var objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(
                 new JsonVersioningModule(ThreadLocalHolder.get())
         );
@@ -220,7 +220,7 @@ Same as `ThreadLocalVersionHolder`, but version information is diving into child
 public class Example {
 
     public static ObjectMapper createObjectMapper() {
-        var objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(
                 new JsonVersioningModule(InheritableThreadLocalHolder.get())
         );

@@ -157,6 +157,8 @@ public class SerializerExampleModel {
 }
 ```
 
+You can see for full example in `example` folder.
+
 ## Version holder
 
 Version holder provide information about current version for module.

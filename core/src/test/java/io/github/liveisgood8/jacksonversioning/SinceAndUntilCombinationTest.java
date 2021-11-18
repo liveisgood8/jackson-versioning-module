@@ -2,6 +2,7 @@ package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
 import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class SinceAndUntilCombinationTest {
 
     @Test
     void testInvalidVersionRange() {
-        var mapper = createObjectMapper(VersionConstant.V2_0);
+        ObjectMapper mapper = createObjectMapper(VersionConstant.V2_0);
 
         JsonMappingException exception = assertThrows(
                 JsonMappingException.class,

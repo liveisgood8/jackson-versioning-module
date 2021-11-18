@@ -1,5 +1,6 @@
 package io.github.liveisgood8.jacksonversioning.holder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.liveisgood8.jacksonversioning.Version;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,7 +41,7 @@ class ThreadLocalVersionHolderTest {
         Version first = Version.of(123, 123);
         Version second = Version.of(546546, 1);
 
-        var versionHolder = ThreadLocalVersionHolder.get();
+        VersionHolder versionHolder = ThreadLocalVersionHolder.get();
 
         ThreadLocalVersionHolder.initialize(first);
         assertEquals(first, versionHolder.getVersion());

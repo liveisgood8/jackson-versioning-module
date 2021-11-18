@@ -1,6 +1,7 @@
 package io.github.liveisgood8.jacksonversioning;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.liveisgood8.jacksonversioning.annotation.JsonVersioned;
 import io.github.liveisgood8.jacksonversioning.util.VersionConstant;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class VersionCollisionTest {
 
     @Test
     void testFirstTestObject() {
-        var mapper = createObjectMapper(VersionConstant.V3_0);
+        ObjectMapper mapper = createObjectMapper(VersionConstant.V3_0);
 
         JsonMappingException exception = assertThrows(
                 JsonMappingException.class,
@@ -30,7 +31,7 @@ class VersionCollisionTest {
 
     @Test
     void testSecondTestObject() {
-        var mapper = createObjectMapper(VersionConstant.V3_0);
+        ObjectMapper mapper = createObjectMapper(VersionConstant.V3_0);
 
         JsonMappingException exception = assertThrows(
                 JsonMappingException.class,
@@ -47,7 +48,7 @@ class VersionCollisionTest {
 
     @Test
     void testThirdTestObject() {
-        var mapper = createObjectMapper(VersionConstant.V3_0);
+        ObjectMapper mapper = createObjectMapper(VersionConstant.V3_0);
 
         JsonMappingException exception = assertThrows(
                 JsonMappingException.class,
@@ -64,7 +65,7 @@ class VersionCollisionTest {
 
     @Test
     void testFourthTestObject() {
-        var mapper = createObjectMapper(VersionConstant.V4_0);
+        ObjectMapper mapper = createObjectMapper(VersionConstant.V4_0);
 
         JsonMappingException exception = assertThrows(
                 JsonMappingException.class,

@@ -17,14 +17,14 @@ To add a dependency on Jackson versioning module using Maven, use the following:
 <dependency>
     <groupId>io.github.liveisgood8</groupId>
     <artifactId>jackson-versioning-module</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
 To add a dependency using Gradle:
 
 ```groovy
-implementation 'io.github.liveisgood8:jackson-versioning-module:1.0.0'
+implementation 'io.github.liveisgood8:jackson-versioning-module:2.0.0'
 ```
 
 ## Register module

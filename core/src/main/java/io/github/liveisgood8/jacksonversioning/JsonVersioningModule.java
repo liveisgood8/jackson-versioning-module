@@ -10,11 +10,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
-import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
+import io.github.liveisgood8.jacksonversioning.holder.serialize.SerializeVersionHolder;
 
 public class JsonVersioningModule extends SimpleModule {
 
-    public JsonVersioningModule(VersionHolder versionHolder) {
+    public JsonVersioningModule(SerializeVersionHolder versionHolder) {
         setDeserializerModifier(
                 new BeanDeserializerModifier() {
                     @Override

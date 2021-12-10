@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ser.ResolvableSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.ser.std.StdDelegatingSerializer;
 import com.fasterxml.jackson.databind.util.Converter;
-import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
+import io.github.liveisgood8.jacksonversioning.holder.serialize.SerializeVersionHolder;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -21,9 +21,9 @@ import java.util.Optional;
 
 public class VersioningSerializer extends BeanSerializer implements ResolvableSerializer {
 
-    private final VersionHolder versionHolder;
+    private final SerializeVersionHolder versionHolder;
 
-    public VersioningSerializer(VersionHolder versionHolder, BeanSerializerBase serializer) {
+    public VersioningSerializer(SerializeVersionHolder versionHolder, BeanSerializerBase serializer) {
         super(serializer);
         this.versionHolder = versionHolder;
     }
@@ -91,7 +91,7 @@ public class VersioningSerializer extends BeanSerializer implements ResolvableSe
         try {
             return VersioningPropertyMetaGenerator
                     .forProperty(beanPropertyWriter)
-                    .getForVersion(versionHolder.getVersion());
+                    .getForVersion(versionHolder.getVersion(bean));
         } catch (Exception e) {
             wrapAndThrow(provider, e, bean, beanPropertyWriter.getName());
             return Optional.empty();

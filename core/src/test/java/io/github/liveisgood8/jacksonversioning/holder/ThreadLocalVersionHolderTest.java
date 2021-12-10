@@ -1,9 +1,10 @@
 package io.github.liveisgood8.jacksonversioning.holder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.liveisgood8.jacksonversioning.Version;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.github.liveisgood8.jacksonversioning.holder.serialize.ThreadLocalVersionHolder;
+import io.github.liveisgood8.jacksonversioning.holder.serialize.SerializeVersionHolder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,12 +19,12 @@ class ThreadLocalVersionHolderTest {
     void testGetVersionInSameThread() {
         ThreadLocalVersionHolder.initialize(version);
 
-        assertEquals(version, ThreadLocalVersionHolder.get().getVersion());
+        assertEquals(version, ThreadLocalVersionHolder.get().getVersion(new Object()));
     }
 
     @Test
     void testGetVersionInSameThreadWhenNotInitialized() {
-        assertEquals(Version.empty(), ThreadLocalVersionHolder.get().getVersion());
+        assertEquals(Version.empty(), ThreadLocalVersionHolder.get().getVersion(new Object()));
     }
 
     @Test
@@ -32,7 +33,7 @@ class ThreadLocalVersionHolderTest {
 
         CompletableFuture.runAsync(() -> {
             ThreadLocalVersionHolder.initialize(localVersion);
-            assertEquals(localVersion, ThreadLocalVersionHolder.get().getVersion());
+            assertEquals(localVersion, ThreadLocalVersionHolder.get().getVersion(new Object()));
         }).join();
     }
 
@@ -41,12 +42,12 @@ class ThreadLocalVersionHolderTest {
         Version first = Version.of(123, 123);
         Version second = Version.of(546546, 1);
 
-        VersionHolder versionHolder = ThreadLocalVersionHolder.get();
+        SerializeVersionHolder versionHolder = ThreadLocalVersionHolder.get();
 
         ThreadLocalVersionHolder.initialize(first);
-        assertEquals(first, versionHolder.getVersion());
+        assertEquals(first, versionHolder.getVersion(new Object()));
 
         ThreadLocalVersionHolder.initialize(second);
-        assertEquals(second, versionHolder.getVersion());
+        assertEquals(second, versionHolder.getVersion(new Object()));
     }
 }

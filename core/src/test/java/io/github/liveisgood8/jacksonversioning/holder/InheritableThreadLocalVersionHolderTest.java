@@ -2,7 +2,8 @@ package io.github.liveisgood8.jacksonversioning.holder;
 
 import io.github.liveisgood8.jacksonversioning.Version;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.github.liveisgood8.jacksonversioning.holder.serialize.InheritableThreadLocalVersionHolder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +15,7 @@ class InheritableThreadLocalVersionHolderTest {
 
     @Test
     void testGetVersionInSameThreadWhenNotInitialized() {
-        assertEquals(Version.empty(), InheritableThreadLocalVersionHolder.get().getVersion());
+        assertEquals(Version.empty(), InheritableThreadLocalVersionHolder.get().getVersion(new Object()));
     }
 
     @Test
@@ -22,7 +23,7 @@ class InheritableThreadLocalVersionHolderTest {
         InheritableThreadLocalVersionHolder.initialize(version);
 
         CompletableFuture.runAsync(() -> {
-            assertEquals(version, InheritableThreadLocalVersionHolder.get().getVersion());
+            assertEquals(version, InheritableThreadLocalVersionHolder.get().getVersion(new Object()));
         }).join();
     }
 }

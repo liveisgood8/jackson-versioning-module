@@ -7,21 +7,22 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializer;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
-import io.github.liveisgood8.jacksonversioning.holder.VersionHolder;
+import io.github.liveisgood8.jacksonversioning.holder.deserialize.DeserializeVersionHolder;
+import io.github.liveisgood8.jacksonversioning.holder.serialize.SerializeVersionHolder;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class VersioningDeserializer extends BeanDeserializer {
 
-    private final VersionHolder versionHolder;
+    private final DeserializeVersionHolder versionHolder;
 
     private final BeanDescription beanDescription;
 
     private final BeanDeserializer deserializer;
 
     public VersioningDeserializer(
-            VersionHolder versionHolder,
+            DeserializeVersionHolder versionHolder,
             BeanDescription beanDescription,
             BeanDeserializer deserializer
     ) {
@@ -33,8 +34,9 @@ public class VersioningDeserializer extends BeanDeserializer {
 
     @Override
     public Object deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
-        Version version = versionHolder.getVersion();
-        ObjectNode jsonNode = jsonParser.readValueAsTree();
+        ObjectNode rootJsonNode = jsonParser.readValueAsTree();
+        Version version = versionHolder.getVersion(rootJsonNode);
+
         Optional<BeanPropertyDefinition> propertyNotInVersion = beanDescription.findProperties()
                 .stream()
                 .filter(
@@ -42,7 +44,7 @@ public class VersioningDeserializer extends BeanDeserializer {
                                 .forPropertyDefinition(beanPropertyDefinition)
                                 .isWithin(version)
                 )
-                .filter(beanPropertyDefinition -> jsonNode.has(beanPropertyDefinition.getName()))
+                .filter(beanPropertyDefinition -> rootJsonNode.has(beanPropertyDefinition.getName()))
                 .findFirst();
 
         if (propertyNotInVersion.isPresent()) {
@@ -54,7 +56,7 @@ public class VersioningDeserializer extends BeanDeserializer {
             );
         }
 
-        JsonParser postInterceptionParser = new TreeTraversingParser(jsonNode, jsonParser.getCodec());
+        JsonParser postInterceptionParser = new TreeTraversingParser(rootJsonNode, jsonParser.getCodec());
         postInterceptionParser.nextToken();
 
         return deserializer.deserialize(postInterceptionParser, ctx);
